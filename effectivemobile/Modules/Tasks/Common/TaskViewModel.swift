@@ -6,6 +6,7 @@
 //
 
 struct TaskViewModel {
+    let id: Int64
     let name: String
     let description: String
     let creationDate: String
