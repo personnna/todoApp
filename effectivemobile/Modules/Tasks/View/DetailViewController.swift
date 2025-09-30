@@ -80,12 +80,12 @@ class DetailViewController: UIViewController {
     private func setupUI() {
         title = task != nil ? "" : "Новая задача"
         
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(
-//            title: "Сохранить",
-//            style: .done,
-//            target: self,
-//            action: #selector(saveTapped)
-//        )
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Сохранить",
+            style: .done,
+            target: self,
+            action: #selector(saveTapped)
+        )
         
         view.addSubview(stackView)
         
@@ -98,18 +98,13 @@ class DetailViewController: UIViewController {
         } else {
             stackView.addArrangedSubview(dateCreatedLabel)
         }
-        
-//        stackView.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
-//            make.leading.trailing.equalToSuperview().inset(20)
-//        }
-//        
+                
         titleTextField.snp.makeConstraints { make in
             make.height.equalTo(44)
-            make.width.equalToSuperview() // Занимает всю ширину стэка
+            make.width.equalToSuperview()
         }
         descriptionTextView.snp.makeConstraints { make in
-            make.height.equalTo(150) // Даем ему фиксированную высоту для формы
+            make.height.equalTo(150)
             make.width.equalToSuperview()
         }
         stackView.snp.makeConstraints { make in
@@ -136,12 +131,11 @@ class DetailViewController: UIViewController {
             titleTextField.text = task.name
             descriptionTextView.text = task.description
             
-            // Кнопка "Сохранить" теперь должна вызывать didRequestUpdateTask
             navigationItem.rightBarButtonItem = UIBarButtonItem(
                 title: "Обновить",
                 style: .done,
                 target: self,
-                action: #selector(saveTapped) // saveTapped будет обрабатывать оба случая
+                action: #selector(saveTapped)
             )
         }
 
@@ -150,7 +144,6 @@ class DetailViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // ✅ ОТЛАДКА: Проверяем, что метод вообще сработал
         print("DetailVC: viewWillDisappear сработал.")
         
         if let presenter = presenter {
@@ -164,9 +157,7 @@ class DetailViewController: UIViewController {
                 return
             }
             
-            // 2. Логика добавления/редактирования
             if let existingTask = task {
-                // РЕЖИМ РЕДАКТИРОВАНИЯ
                 print("DetailVC: Запрос на обновление задачи ID: \(existingTask.id)")
                 presenter.didRequestUpdateTask(
                     id: Int(existingTask.id),
@@ -174,7 +165,6 @@ class DetailViewController: UIViewController {
                     description: description
                 )
             } else {
-                // РЕЖИМ ДОБАВЛЕНИЯ
                 print("DetailVC: Запрос на добавление новой задачи.")
                 presenter.didRequestSaveNewTask(
                     title: title,
@@ -182,7 +172,6 @@ class DetailViewController: UIViewController {
                 )
             }
             
-            // 3. ✅ КЛЮЧЕВОЙ МОМЕНТ: Вызов Делегата
             delegate?.didSaveNewTask()
             print("DetailVC: Вызван delegate?.didSaveNewTask()")
         } else {
@@ -205,13 +194,11 @@ class DetailViewController: UIViewController {
     }
     
     @objc private func saveTapped() {
-        // 1. Вызываем Presenter для сохранения
         presenter?.didRequestSaveNewTask(
             title: titleTextField.text ?? "",
             description: descriptionTextView.text ?? ""
         )
         
-        // 2. ✅ Вызываем делегата (для обновления TasksVC)
         delegate?.didSaveNewTask()
         
         // 3. Закрываем модальное окно

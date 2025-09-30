@@ -8,13 +8,6 @@
 import UIKit
 import SnapKit
 
-//protocol TasksPresenterProtocol: AnyObject {
-//    func viewDidLoad()
-//    func getTask(at index: Int) -> TaskViewModel
-//    func numberOfTasks() -> Int
-//    // ... другие методы
-//}
-
 class ViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource {
     
     private var tasks: [TaskViewModel] = []
@@ -129,7 +122,7 @@ extension ViewController{
 
 }
 
-extension ViewController: UITableViewDelegate {
+extension ViewController: UITableViewDelegate, TaskUpdateDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print("UITableView is asking for rows.") // <-- ADD THIS LINE
         return presenter?.numberOfTasks() ?? 0
@@ -237,32 +230,24 @@ extension ViewController: TasksViewProtocol {
     }
     
     private func makeContextMenu(for indexPath: IndexPath) -> UIMenu {
-        // Получаем задачу, если нужно передать ее в действие
         let task = tasks[indexPath.row]
         
-        // 1. Действие "Редактировать"
         let editAction = UIAction(title: "Редактировать", image: UIImage(systemName: "pencil")) { [weak self] action in
-            // Вызываем логику редактирования (как при нажатии на ячейку)
             self?.presenter?.didSelectTask(at: indexPath)
         }
         
-        // 2. Действие "Поделиться" (Можно реализовать позже)
         let shareAction = UIAction(title: "Поделиться", image: UIImage(systemName: "square.and.arrow.up")) { action in
             print("Поделиться задачей: \(task.name)")
             // Здесь может быть вызов UIActivityViewController
         }
         
-        // 3. Действие "Удалить"
         let deleteAction = UIAction(title: "Удалить", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] action in
-            // Вызываем логику удаления, которую мы уже настроили
             self?.presenter?.didDeleteTask(at: indexPath)
         }
         
-        // Создаем меню
         return UIMenu(title: "", children: [editAction, shareAction, deleteAction])
     }
     
-    // Создает контроллер для предварительного просмотра (похожий на ячейку)
     private func makeTaskPreviewViewController(for task: TaskViewModel) -> UIViewController {
         let previewVC = UIViewController()
         previewVC.view.backgroundColor = .backgroundGray
@@ -316,10 +301,6 @@ extension ViewController: TasksViewProtocol {
     func didSaveNewTask() {
         // 1. Отладочный вывод
         print("TasksVC: Делегат сработал! Запрашиваем обновление...")
-        
-        // 2. Запрашиваем у Presenter повторную загрузку данных
-        // (Presenter вызовет Interactor, который загрузит данные,
-        // и затем вызовет view.displayTasks()).
         presenter?.viewDidLoad()
     }
     

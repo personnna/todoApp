@@ -6,17 +6,15 @@
 //
 
 class DetailPresenter: DetailPresenterProtocol {
-    weak var view: DetailViewController? // DetailViewController
+    weak var view: DetailViewController?
     var interactor: DetailInteractorInputProtocol?
-    var router: DetailRouterProtocol? // Или используйте TasksRouter, если он управляет навигацией
+    var router: DetailRouterProtocol?
     
     func didRequestSaveNewTask(title: String, description: String) {
-        // Передаем запрос Interactor'у
         interactor?.saveNewTask(title: title, description: description)
     }
     
     func didRequestUpdateTask(id: Int, title: String, description: String) {
-        // Просто передаем команду Interactor'у
         interactor?.updateTask(id: id, title: title, description: description)
     }
 }

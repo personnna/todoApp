@@ -139,9 +139,7 @@ extension TaskCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        // Блокируем стандартную подсветку, чтобы избежать белого мигания.
-        // Явно устанавливаем цвет фона, чтобы он не менялся.
-        let targetColor: UIColor = .clear // или цвет, который вы используете для ячейки
+        let targetColor: UIColor = .clear
         
         if animated {
             UIView.animate(withDuration: 0.1) {
@@ -155,6 +153,5 @@ extension TaskCell {
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-        // Просто ничего не делаем, если selectionStyle = .none.
     }
 }

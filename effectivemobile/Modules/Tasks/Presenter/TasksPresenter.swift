@@ -75,31 +75,24 @@ class TasksPresenter: TasksPresenterProtocol, TasksInteractorOutputProtocol {
     func didFailToFetchTasks(with error: Error) {
         DispatchQueue.main.async { [weak self] in
             self?.view?.hideLoading()
-            // Здесь можно показать ошибку пользователю
         }
     }
     
     func didTapAddButton() {
-        // Просим Router открыть экран деталей в режиме добавления
         router?.navigateToAddTask()
     }
     
     func didChangeSearchText(_ text: String) {
-        // 1. Очищаем строку от лишних пробелов, чтобы избежать ошибок
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        // 1. Создаем предикат для фильтрации
         let predicate: NSPredicate?
         
         if trimmedText.isEmpty {
-            predicate = nil // Если строка пуста, убираем фильтр
+            predicate = nil
         } else {
-            // ✅ ФИКС: Передаем ОЧИЩЕННЫЙ ТЕКСТ (trimmedText) ДВАЖДЫ!
-            // Ищем совпадения в 'name' или 'todoDescription', игнорируя регистр
             predicate = NSPredicate(format: "name CONTAINS[cd] %@ OR todoDescription CONTAINS[cd] %@", trimmedText, trimmedText)
         }
 
-        // 2. Вызываем Interactor для повторной загрузки данных с фильтром
         interactor?.fetchTasks(with: predicate)
     }
 }
